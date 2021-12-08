@@ -22,10 +22,10 @@ class State:
     
     #Permet de savoir si la partie est terminée, et qui est le gagnant ou s'il y a une égalité
     def isGameFinished(self):
-    #Rappel :
-    # 0  si la case est vide
-    # 1  si p1 a joué la case
-    # -1 si p2 a joué la case
+        #Rappel :
+        # 0  si la case est vide
+        # 1  si p1 a joué la case
+        # -1 si p2 a joué la case
         for i in range(BOARD_ROWS): #Pour chaque ligne
             if sum(self.board[i, :]) == 3: #On teste si la somme de la ligne égale 3
                 self.isFinished = True
@@ -97,7 +97,7 @@ class State:
     
     #Logique d'entraintement en Reinforcement Learning
     def trainRL(self, rounds=100):
-    #rounds = nombre d'entrainements (100 par défaut)
+        #rounds = nombre d'entrainements (100 par défaut)
         for i in range(rounds): 
             if i % 1000 == 0: #Tous les multiples de 1000
                 print("Rounds {}".format(i)) #On affiche la progression
