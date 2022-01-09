@@ -1,5 +1,5 @@
 import keras
-from keras.models import Sequential
+from keras.models import Sequential, save_model
 from keras.layers import Dense, Dropout
 from pandas import read_csv
 from sklearn.model_selection import train_test_split
@@ -58,8 +58,12 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # Entrainement du modèle
-model.fit(data_train_enc, labels_train_enc, epochs=100, batch_size=32, verbose=2)
+model.fit(data_train_enc, labels_train_enc, epochs=10000, batch_size=32, verbose=2)
 
 # Evaluation de la précision du modèle
 _, accuracy = model.evaluate(data_test_enc, labels_test_enc, verbose=0)
 print('Accuracy: %.2f' % (accuracy*100))
+
+# Sauvegarde du modèle
+filepath = './saved_ann_model'
+save_model(model, filepath)
