@@ -50,7 +50,7 @@ labels_train_enc, labels_test_enc = prepare_targets(labels_train, labels_test)
 # Construction du réseau
 model = Sequential()
 # Hidden layer : 3 neuronnes et on spécifie que l'input layer est composée de 9 variables
-model.add(Dense(3, input_dim=9, activation='relu'))
+model.add(Dense(200, input_dim=9, activation='relu'))
 # Output layer
 model.add(Dense(1, activation='sigmoid'))
 
@@ -58,4 +58,8 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # Entrainement du modèle
-model.fit(data_train_enc, labels_train_enc, epochs=100, batch_size=16, verbose=2)
+model.fit(data_train_enc, labels_train_enc, epochs=100, batch_size=32, verbose=2)
+
+# Evaluation de la précision du modèle
+_, accuracy = model.evaluate(data_test_enc, labels_test_enc, verbose=0)
+print('Accuracy: %.2f' % (accuracy*100))
