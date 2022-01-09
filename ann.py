@@ -54,12 +54,8 @@ model.add(Dense(3, input_dim=9, activation='relu'))
 # Output layer
 model.add(Dense(1, activation='sigmoid'))
 
-print("Hello")
+# Compilation du modèle
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-## Configure a model for mean-squared error regression.
-#model.compile(loss='mse', optimizer='adam')
-
-#checkpointer = keras.callbacks.ModelCheckpoint(filepath="weights.h5", verbose=1, save_best_only=True)
-
-## Train the model
-#history = model.fit(data_train, labels_train, epochs=5000, batch_size=32, verbose=1, callbacks=[checkpointer])
+# Entrainement du modèle
+model.fit(data_train_enc, labels_train_enc, epochs=100, batch_size=16, verbose=2)
