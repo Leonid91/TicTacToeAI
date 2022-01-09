@@ -2,6 +2,8 @@ import numpy as np
 import pickle
 import keras
 from keras.models import Sequential, save_model, load_model
+from random import seed
+from random import randint
 
 BOARD_ROWS = 3
 BOARD_COLS = 3
@@ -274,29 +276,35 @@ class ANNPlayer:
         while True:
             reshapedBoard = current_board.reshape(BOARD_COLS * BOARD_ROWS) # On met le board au bon format pour l'input de l'ANN
             convertedBoard = []
+            oppositeBoard = []
             toPredict = []
+            oppositeToPredic = []
             for val in reshapedBoard: # On transforme les valeurs pour correspondre à celles connues par l'ANN
                 if val == 1:
                     convertedBoard.append(2)
+                    oppositeBoard.append(1)
                 elif val == -1 :
                     convertedBoard.append(1)
+                    oppositeBoard.append(2)
                 else :
                     convertedBoard.append(0)
+                    oppositeBoard.append(0)
 
             for pos in positions:
                 index1D = (3*pos[0]) + pos[1] # On calcule l'index en 1 dim
-                #boardToPredict = np.empty_like(convertedBoard)
-                #boardToPredict = convertedBoard
                 copy = np.copy(convertedBoard)
+                copyOpposite = np.copy(oppositeBoard)
                 boardToPredict = copy.tolist()
-                if symbol == 1:
-                    boardToPredict[index1D] = 2 #On remplace le symbole de la position dispo par le symbole de l'IA
-                elif symbol == -1:
-                    boardToPredict[index1D] = 1 #On remplace le symbole de la position dispo par le symbole de l'IA
-                
+                oppositeBoardToPredict = copyOpposite.tolist()
+
+                boardToPredict[index1D] = 2 #On remplace le symbole de la position dispo par le symbole de l'IA
+                oppositeBoardToPredict[index1D] = 2
+                    
                 toPredict.append(boardToPredict)
+                oppositeToPredic.append(oppositeBoardToPredict)
 
             predictions = (model.predict(toPredict) > 0.5).astype(int)
+            oppositePredictions = (model.predict(oppositeToPredic) > 0.5).astype(int)
             i = 0
             action = (-1,-1)
             for pred in predictions: # On parcourt toutes les prédictions
@@ -308,10 +316,24 @@ class ANNPlayer:
                 else :
                     break
 
+            # Si on a pas déterminé de meilleur coup, on essai de prévoir le meilleur coup de l'adversaire
+            if action == (-1,-1):
+                i = 0
+                for pred in oppositePredictions: # On parcourt toutes les prédictions
+                    for val in pred:
+                        if val == 1:
+                            action = positions[i] # On choisit la première prédiction = 1
+                    if action == (-1,-1):
+                        i = i+1
+                    else :
+                        break
+
             if action in positions:
                 return action
             else:
-                return positions[0] # Si il n'y a aucune prédiction à 1, on joue la première position
+                seed(1)
+                i = randint(0, len(positions))
+                return positions[i] # Si il n'y a aucune prédiction à 1, on joue une position aléatoire
 
     def addState(self, state):
         pass
